@@ -34,7 +34,7 @@ public class SmokeTest2 {
 	public void i_enter_valid_username_and_valid_password(String uname, String password) throws Throwable {
 	    // Write code here that turns the phrase above into concrete actions
 		driver.findElement(By.id("txtUsername")).sendKeys(uname);
-		driver.findElement(By.id("txtPasswor")).sendKeys(password);
+		driver.findElement(By.id("txtPassword")).sendKeys(password);
 	    //throw new PendingException();
 	}
 

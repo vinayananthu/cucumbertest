@@ -845,7 +845,7 @@ public class GenericAbstract {
 //	    System.setProperty("webdriver.chrome.driver", "yourpath to chromeDriver\\chromedriver.exe");
 //	    WebDriver driver = new ChromeDriver();
 //	    driver.get("http://www.w3schools.com/");
-		String dest = System.getProperty("user.dir") + File.separator + "src\\main\\java" + File.separator + "reports"
+		String dest = System.getProperty("user.dir") + File.separator + "screenshots"
 				+ File.separator + TestUtils.generateFailScreenShotName(tcid, stepNo) + ".png";
 	    driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 	    driver.manage().window().maximize();
@@ -859,7 +859,7 @@ public class GenericAbstract {
 	        if(isScrollBarPresent){
 	            while(scrollHeight > 0){
 	                File srcFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-	                dest = System.getProperty("user.dir")  + File.separator + "reports"
+	                dest = System.getProperty("user.dir")  + File.separator + "screenshots"
 	        				+ File.separator + TestUtils.generateFailScreenShotName(tcid, stepNo) +fileIndex+ ".png";
 	                FileUtils.copyFile(srcFile, new File(dest));
 	                failedTest.log(LogStatus.FAIL,

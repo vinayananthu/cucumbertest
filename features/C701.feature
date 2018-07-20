@@ -25,7 +25,7 @@ Given I impersonate "Agent" user "325DEMODEM"
 @C701 @Sample
   Scenario: Verify that if pdf download function is unchecked - it will not be available at the order complete page.
   When I Start running test case "C701"
-#  And Click "start a new order" link
+  And Click "start a new orders" link
 #  And Click "Property Postcards" link under "Property Marketing" link
 #  And Click "Select" button under "4862" template
 #  And Click "Next" button

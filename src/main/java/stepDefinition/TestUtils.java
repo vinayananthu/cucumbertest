@@ -22,7 +22,7 @@ public class TestUtils {
 	currentTime = dateFormat.format(date);
 	try {
 	File dir1 = new File(".");
-	String file = dir1.getCanonicalPath() + File.separator + "src\\main\\java" + File.separator + "reports" + File.separator
+	String file = dir1.getCanonicalPath() + File.separator + "reports" + File.separator
 			+ "TestReports" +TestUtils.currentTime+ ".html";
 	extent = new ExtentReports(file);
 	}catch(Exception e) {

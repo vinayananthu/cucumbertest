@@ -20,7 +20,7 @@
 Feature: Test add a listing process.
 
 Background:
-Given I login to "Xadmin"
+#Given I login to "Xadmin"
 
 @C2671 @Sample
 Scenario: Verify data entered during Listing creation is imported correctly into regular order.

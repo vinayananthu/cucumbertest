@@ -1,161 +1,125 @@
-$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("MyApp.feature");
+$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("features/AddAListing1.feature");
 formatter.feature({
-  "comments": [
-    {
-      "line": 1,
-      "value": "#Author: your.email@your.domain.com"
-    },
-    {
-      "line": 2,
-      "value": "#Keywords Summary :"
-    },
-    {
-      "line": 3,
-      "value": "#Feature: List of scenarios."
-    },
-    {
-      "line": 4,
-      "value": "#Scenario: Business rule through list of steps with arguments."
-    },
-    {
-      "line": 5,
-      "value": "#Given: Some precondition step"
-    },
-    {
-      "line": 6,
-      "value": "#When: Some key actions"
-    },
-    {
-      "line": 7,
-      "value": "#Then: To observe outcomes or validation"
-    },
-    {
-      "line": 8,
-      "value": "#And,But: To enumerate more Given,When,Then steps"
-    },
-    {
-      "line": 9,
-      "value": "#Scenario Outline: List of steps for data-driven as an Examples and \u003cplaceholder\u003e"
-    },
-    {
-      "line": 10,
-      "value": "#Examples: Container for s table"
-    },
-    {
-      "line": 11,
-      "value": "#Background: List of steps run before each of the scenarios"
-    },
-    {
-      "line": 12,
-      "value": "#\"\"\" (Doc Strings)"
-    },
-    {
-      "line": 13,
-      "value": "#| (Data Tables)"
-    },
-    {
-      "line": 14,
-      "value": "#@ (Tags/Labels):To group Scenarios"
-    },
-    {
-      "line": 15,
-      "value": "#\u003c\u003e (placeholder)"
-    },
-    {
-      "line": 16,
-      "value": "#\"\""
-    },
-    {
-      "line": 17,
-      "value": "## (Comments)"
-    },
-    {
-      "line": 18,
-      "value": "#Sample Feature Definition Template"
-    }
-  ],
-  "line": 20,
-  "name": "Title of your feature",
-  "description": "I want to use this template for my feature file",
-  "id": "title-of-your-feature",
+  "name": "Test add a listing process.",
+  "description": "",
   "keyword": "Feature",
   "tags": [
     {
-      "line": 19,
-      "name": "@tag"
+      "name": "@AddAListing"
     }
   ]
 });
-formatter.scenario({
-  "line": 24,
-  "name": "Test login with valid credentials",
+formatter.background({
+  "name": "",
   "description": "",
-  "id": "title-of-your-feature;test-login-with-valid-credentials",
-  "type": "scenario",
+  "keyword": "Background"
+});
+formatter.step({
+  "name": "I login to \"Xadmin\"",
+  "keyword": "Given "
+});
+formatter.match({
+  "location": "TestStepDefinitions.i_login_to(String)"
+});
+formatter.result({
+  "status": "passed"
+});
+formatter.scenario({
+  "name": "Verify data entered during Listing creation is imported correctly into regular order.",
+  "description": "",
   "keyword": "Scenario",
   "tags": [
     {
-      "line": 23,
-      "name": "@tag1"
+      "name": "@AddAListing"
+    },
+    {
+      "name": "@C2671"
+    },
+    {
+      "name": "@Sample"
     }
   ]
 });
 formatter.step({
-  "line": 25,
-  "name": "Open Chrome",
-  "keyword": "Given "
-});
-formatter.step({
-  "line": 26,
-  "name": "start application",
-  "keyword": "And "
-});
-formatter.step({
-  "line": 27,
-  "name": "I enter valid \"vananthu\" and valid \"Vny@5145\"",
+  "name": "I Start running test case \"C2671\"",
   "keyword": "When "
 });
+formatter.match({
+  "location": "TestStepDefinitions.site_is_open(String)"
+});
+formatter.result({
+  "status": "passed"
+});
 formatter.step({
-  "line": 28,
-  "name": "user should be able to login successfully",
+  "name": "end of test.",
   "keyword": "Then "
 });
 formatter.match({
-  "location": "SmokeTest2.open_firefox()"
+  "location": "TestStepDefinitions.end_of_test()"
 });
 formatter.result({
-  "duration": 5626074786,
   "status": "passed"
 });
-formatter.match({
-  "location": "SmokeTest2.start_application()"
-});
-formatter.result({
-  "duration": 4013950120,
-  "status": "passed"
-});
-formatter.match({
-  "arguments": [
+formatter.uri("features/C701.feature");
+formatter.feature({
+  "name": "Order Main Agent work flow  for Coldwell Bank Florida.",
+  "description": "",
+  "keyword": "Feature",
+  "tags": [
     {
-      "val": "vananthu",
-      "offset": 15
+      "name": "@orderMain"
+    }
+  ]
+});
+formatter.background({
+  "name": "",
+  "description": "",
+  "keyword": "Background"
+});
+formatter.step({
+  "name": "I impersonate \"Agent\" user \"325DEMODEM\"",
+  "keyword": "Given "
+});
+formatter.match({
+  "location": "TestStepDefinitions.i_impersonate_user(String,String)"
+});
+formatter.result({
+  "status": "passed"
+});
+formatter.scenario({
+  "name": "Verify that if pdf download function is unchecked - it will not be available at the order complete page.",
+  "description": "",
+  "keyword": "Scenario",
+  "tags": [
+    {
+      "name": "@orderMain"
     },
     {
-      "val": "Vny@5145",
-      "offset": 36
+      "name": "@C701"
+    },
+    {
+      "name": "@Sample"
     }
-  ],
-  "location": "SmokeTest2.i_enter_valid_username_and_valid_password(String,String)"
+  ]
 });
-formatter.result({
-  "duration": 340543249,
-  "status": "passed"
+formatter.step({
+  "name": "I Start running test case \"C701\"",
+  "keyword": "When "
 });
 formatter.match({
-  "location": "SmokeTest2.user_should_be_able_to_login_successfully()"
+  "location": "TestStepDefinitions.site_is_open(String)"
 });
 formatter.result({
-  "duration": 528696559,
+  "status": "passed"
+});
+formatter.step({
+  "name": "end of test.",
+  "keyword": "Then "
+});
+formatter.match({
+  "location": "TestStepDefinitions.end_of_test()"
+});
+formatter.result({
   "status": "passed"
 });
 });

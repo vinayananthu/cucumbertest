@@ -472,7 +472,7 @@ public class GenericAbstract {
 			driver.findElement(by);
 			returnValue = true;
 		} catch (Exception e) {
-			throw e;
+//			throw e;
 		}
 		return returnValue;
 	}
@@ -484,7 +484,7 @@ public class GenericAbstract {
 			isElementPresent(by);
 			returnValue = driver.findElement(by).isDisplayed();
 		} catch (Exception e) {
-			throw e;
+//			throw e;
 		}
 		return returnValue;
 	}

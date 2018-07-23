@@ -703,7 +703,8 @@ public class WrapperMethods extends GenericAbstract {
 				if (isElementPresent(path)) {
 					return isElementPresent(path);
 				} else {
-					returnValue = false;
+					throw new Exception(resultValue+" is not available.");
+//					returnValue = false;
 				}
 
 			case "close":
@@ -800,7 +801,7 @@ public class WrapperMethods extends GenericAbstract {
 					if(!text.toLowerCase().trim().equals(price)){
 						throw new RuntimeException("Expected----> "+text.toLowerCase().trim()+", actual----> "+price);
 					}
-					Assert.assertEquals(text.toLowerCase().trim(), Price);
+					Assert.assertEquals(text.toLowerCase().trim(), price);
 				} else {
 
 					String price = getText(path).replaceAll("$", "");

@@ -1,5 +1,20 @@
 package stepDefinition;
 
+/*
+ * This class is the link between Gherkin steps to Selenium methods in the back end.
+ * Steps Include:
+ * 
+ * 1. Click
+ * 2. Select
+ * 3. Delete
+ * 4. Verify
+ * 5. Mouse Over
+ * 6. Impersonate
+ * 7. Login etc.,
+ * 
+ * @Author: Vinay Kumar Ananthu
+ */
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -39,8 +54,8 @@ public class TestStepDefinitions {
 	static {
 		// driver.quit();
 		TestUtils testUtils = new TestUtils();
-
 	}
+	
 	@Given("^Open Chrome$")
 	public void open_chrome() throws Throwable {
 	    // Write code here that turns the phrase above into concrete actions
@@ -54,8 +69,6 @@ public class TestStepDefinitions {
 	
 	@When("I Start running test case {string}")
 	public void site_is_open(String tcid) throws Throwable {
-//	     Write code here that turns the phrase above into concrete actions
-//	    throw new PendingException();
 		this.tcid = tcid;
 		test = TestUtils.test;
 		test = TestUtils.extent.startTest(tcid);
@@ -67,12 +80,6 @@ public class TestStepDefinitions {
 	
 	@When("I impersonate {string} user {string}")
 	public void i_impersonate_user(String userType, String id) throws Throwable {
-//	    Write code here that turns the phrase above into concrete actions
-//	    throw new PendingException();
-		//Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe");
-		//driver.findElement(By.xpath("//*[@id='login']")).clear();
-//		driver.manage().timeouts().implicitlyWait(30000, TimeUnit.MILLISECONDS);
-//		driver.findElement(By.xpath("//*[@id='login']")).sendKeys(id);
 		message = "Impersonate User "+id+" "+userType;
 		if(test==null) {
 			test = TestUtils.test;
@@ -110,6 +117,7 @@ public class TestStepDefinitions {
 			String response = wMethods.impersonateUser(userType, id);
 			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - executed Successfully");
 			test.log(LogStatus.PASS, (stepNo) + " - " +  message+ " - executed Successfully. Note: this is for next scenario in the feature.");
+			stepNo++;
 		}catch(Exception e) {
 
 			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
@@ -141,19 +149,30 @@ public class TestStepDefinitions {
 		}
 	}
 	
-//	@When("^start a new order$")
-//	public void start_a_new_order() throws Throwable {
-//	    // Write code here that turns the phrase above into concrete actions
-////	    throw new PendingException();
-//		message = "Step 2 - Start New Order Failed";
-//		wMethods.click("link", "start new order");
-//		Assert.assertTrue(wMethods.verifyExpectedResult("url", "next/categories.php"), message + " -- Failed");
-//		System.out.println( tcid+" : " + (stepNo) + " - " + "Clicked Start A New Order Successfully");
-//		test.log(LogStatus.PASS, (stepNo) + " - " + "Clicked Start A New Order Successfully");
-//		stepNo++;
-//	}
+	@Given("navigate to {string}")
+	public void navigate_to(String string) throws Throwable{
+		message = "I login to "+string;
+		if(test==null) {
+			test = TestUtils.test;
+			test = TestUtils.extent.startTest("Login to "+string);
+		}
+		try{
+		wMethods.navigateTo(string);
+		System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - executed Successfully");
+		test.log(LogStatus.PASS, (stepNo) + " - " +  message+ " - executed Successfully. Note: this is for next scenario in the feature.");
+		stepNo++;
+		}catch(Exception e) {
+			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+			e.printStackTrace();
+			throw e;
+		}
+	}
 	
-	@When("Click {string} link under {string} link")
+
+//-------------------------------------Click methods below-------------------------------------------//
+	
+	@When("Click {string} link under {string} category")
 	public void click_on_link_under_link(String arg1, String arg2) throws Throwable {
 //	    Write code here that turns the phrase above into concrete actions
 //	    throw new PendingException();
@@ -175,11 +194,10 @@ public class TestStepDefinitions {
 	
 	@When("Click {string} button under {string} template")
 	public void click_button_under_template(String arg1, String arg2) throws Throwable {
-//	    // Write code here that turns the phrase above into concrete actions
-//	    throw new PendingException();
+
 		message = "Click "+arg1+" button under "+arg2+ " template";
 		try {
-		wMethods.click("template", "4862", "select");
+		wMethods.click("template", arg2, arg1);
 		wMethods.verifyExpectedResult("url", "next/template_back.php");
 		System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - executed Successfully");
 		test.log(LogStatus.PASS, (stepNo) + " - " +  message+ " - executed Successfully");
@@ -194,8 +212,6 @@ public class TestStepDefinitions {
 	
 	@When("Click {string} button")
 	public void click_button(String buttonName) throws Throwable {
-//	    // Write code here that turns the phrase above into concrete actions
-//	    throw new PendingException();
 		message = "Click "+buttonName+" button";
 		try {
 		wMethods.click("Button", buttonName);
@@ -296,13 +312,12 @@ public class TestStepDefinitions {
 		}
 	}
 	
-	@Then("I recieve an error {string}")
-	public void i_recieve_an_error(String error) throws Throwable {
-//	    // Write code here that turns the phrase above into concrete actions
-//	    throw new PendingException();
-		message = "I receive an error: "+error;
+	//C2671: And Click "Send Direct Mail" dropdown
+	@When("Click {string} dropdown")
+	public void click_dropdown(String string) throws Throwable{
+	    message = "Click "+ string+ " dropdown";
 		try {
-		wMethods.verifyExpectedResult("label", "error",error);
+		wMethods.click("dropdown", string);
 		System.out.println(tcid+" : " + (stepNo) + " - " + "Verified the error.");
 		test.log(LogStatus.PASS, (stepNo) + " - " + "Verified the error.");
 		stepNo++;
@@ -314,14 +329,14 @@ public class TestStepDefinitions {
 		}
 	}
 	
-	@Then("end of test.")
-	public void end_of_test() throws Throwable {
-	    // Write code here that turns the phrase above into concrete actions
-		message= "Ending test"+tcid;
+	@Given("Click {string} link")
+	public void click_link(String linkName) throws Throwable {
+		message = "Click "+linkName+" link";
 		try {
-		test.log(LogStatus.INFO, "End of current test.");
-		TestUtils.extent.endTest(test);
-		System.out.println("End of test "+tcid+".");
+		wMethods.click("Link", linkName);
+		test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+		System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+		stepNo++;
 		}catch(Exception e) {
 			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
 			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
@@ -329,18 +344,27 @@ public class TestStepDefinitions {
 			throw e;
 		}
 	}
-	
-//	@Given("^end of Execution\\.$")
-//	public void end_of_Execution() throws Throwable {
-////	    // Write code here that turns the phrase above into concrete actions
-////	    throw new PendingException();
-//		test = TestUtils.extent.startTest("Exit");
-//		test.log(LogStatus.PASS, "End of Execution.");
-//		TestUtils.extent.flush();
-//		System.out.println("End of Execution.");
-//	}
-	
 
+	
+	//C388: Click "Edit" icon
+	@When("Click {string} icon")
+	public void click_icon(String string) throws Throwable{
+		message = "Click "+string+" icon";
+		click("icon","Edit");
+		try {
+			wMethods.click("icon",string);
+			test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+			System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+			stepNo++;
+			}catch(Exception e) {
+				genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+				System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+				e.printStackTrace();
+				throw e;
+			}
+	}
+	
+	//----------------------------------------------Select Methods below-------------------------------------------------------//
 	
 	//C701: Select "Single and Multi-family" in "address type" dropdown
 	@Given("Select {string} in {string} dropdown")
@@ -359,11 +383,12 @@ public class TestStepDefinitions {
 		}
 	}
 	
-	@Given("Click {string} link")
-	public void click_link(String linkName) throws Throwable {
-		message = "Click "+linkName+" link";
+	//Check usage
+	@Given("Select {string} {string} as {string}")
+	public void select_as(String arg1, String arg2, String arg3) throws Throwable {
+		message = "Select "+arg1+ " "+arg2+" as "+arg3;
 		try {
-		wMethods.click("Link", linkName);
+		wMethods.select(arg1, arg2, arg3);
 		test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
 		System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
 		stepNo++;
@@ -392,6 +417,7 @@ public class TestStepDefinitions {
 	}
 	
 
+	//-----------------------------------------Type methods below-------------------------------------------------//
 	
 	@Given("Type {string} in {string} field")
 	public void type_in_field(String arg1, String arg2) throws Throwable {
@@ -408,22 +434,7 @@ public class TestStepDefinitions {
 			throw e;
 		}
 	}
-
-	@Then("{string} page should be displayed.")
-	public void page_should_be_displayed(String arg1) throws Throwable {
-		message = "Verify "+ arg1+" page.";
-		try {
-		wMethods.verifyExpectedResult("url", arg1);
-		test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
-		System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
-		stepNo++;
-		}catch(Exception e) {
-			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
-			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
-			e.printStackTrace();
-			throw e;
-		}
-	}
+	
 	
 	@Given("Type amountdue in {string} field")
 	public void type_amountdue_in_field(String arg1) throws Throwable {
@@ -445,9 +456,63 @@ public class TestStepDefinitions {
 		
 	}
 	
-	@Given("Check {string} button {string} is {string}")
-	public void check_button_is(String arg1, String arg2, String arg3) throws Throwable {
-		message = "Check "+arg1 +" button \""+arg2+ "\" is "+arg3;
+	
+	//C2671: Type mlsid in "Search My Listings" field
+	@Given("Type mlsid in {string} field")
+	public void type_mlsid_in_field(String string)throws Throwable {
+		message= "Type mlsid in "+string+" field";
+		try {
+		wMethods.type(string,wMethods.mlsid);
+		test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+		System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+		stepNo++;
+		}catch(Exception e) {
+			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	
+	//--------------------------------- Verify Section (Expected results)------------------------------//
+	
+	@Then("Verify error {string}")
+	public void Verify_error(String error) throws Throwable {
+		message = "I receive an error: "+error;
+		try {
+		wMethods.verifyExpectedResult("label", "error",error);
+		System.out.println(tcid+" : " + (stepNo) + " - " + "Verified the error.");
+		test.log(LogStatus.PASS, (stepNo) + " - " + "Verified the error.");
+		stepNo++;
+		}catch(Exception e) {
+			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	// C700: Verify "/next/landing/index.php" page should be displayed.
+	@Then("Verify {string} page should be displayed.")
+	public void page_should_be_displayed(String arg1) throws Throwable {
+		message = "Verify "+ arg1+" page.";
+		try {
+		wMethods.verifyExpectedResult("url", arg1);
+		test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+		System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+		stepNo++;
+		}catch(Exception e) {
+			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	@Given("Verify {string} button {string} is {string}")
+	public void verify_button_is(String arg1, String arg2, String arg3) throws Throwable {
+		message = "Verify "+arg1 +" button \""+arg2+ "\" is "+arg3;
 		try {
 		wMethods.verifyExpectedResult(arg1,arg2, arg3);
 		test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
@@ -478,6 +543,7 @@ public class TestStepDefinitions {
 		
 	}
 	
+	
 	@Then("Verify {string} {string} should be {string} in Order Summary")
 	public void should_be_in_Order_Summary(String arg1, String arg2, String arg3) throws Throwable {
 			message = arg1+ " "+arg2+" should be "+arg3+" in Order Summary";
@@ -494,21 +560,6 @@ public class TestStepDefinitions {
 			}
 	}
 	
-	@Given("Select {string} {string} as {string}")
-	public void select_as(String arg1, String arg2, String arg3) throws Throwable {
-		message = "Select "+arg1+ " "+arg2+" as "+arg3;
-		try {
-		wMethods.select(arg1, arg2, arg3);
-		test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
-		System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
-		stepNo++;
-		}catch(Exception e) {
-			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
-			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
-			e.printStackTrace();
-			throw e;
-		}
-	}
 	
 	//C701: Verify "Manage Your Address List" label is "present"
 	@Given("Verify {string} label is {string}")
@@ -527,6 +578,7 @@ public class TestStepDefinitions {
 		}
 	}
 	
+	
 	// C701: Verify "approved" button is "inactive"
 	@Given("Verify {string} button is {string}")
 	public void verify_button_is(String arg1, String arg2) throws Throwable {
@@ -544,6 +596,7 @@ public class TestStepDefinitions {
 		}
 	}
 	
+	//Alternative to above.
 	@Given("Check {string} button is {string}")
 	public void check_button_is(String arg1, String arg2) throws Throwable {
 		message = "Verify "+arg1+" button is "+arg2;
@@ -560,6 +613,7 @@ public class TestStepDefinitions {
 		}
 	}
 	
+	
 	@When("Verify {string} checkbox is {string}")
 	public void verify_checkbox_is(String string, String string2) throws Exception {
 		message="Verify "+ string+" checkbox is "+ string2;
@@ -575,13 +629,121 @@ public class TestStepDefinitions {
 				throw e;
 			}
 	}
-
+	
+	
+	//C2671 : And Verify "Street Address" label "value" should be "1115 Forest Park" 
+	@When("Verify {string} label {string} should be {string}")
+	public void verify_label_should_be(String string, String string2, String string3) throws Exception{
+		message = "Verify "+string +" label "+ string2+" should be "+string3;
+		try {
+			wMethods.verifyExpectedResult("label", string,string2,string3);
+			test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+			System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+			stepNo++;
+			}catch(Exception e) {
+				genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+				System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+				e.printStackTrace();
+				throw e;
+			}
+	}
+	
+	
+	//C2671: And Store "mlsid" textbox
+	@When("Store {string} textbox")
+	public void store_textbox(String string) throws Throwable{
+		message= "Store "+string+" textbox";
+		try {
+			wMethods.store("textbox", string);
+			test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+			System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+			stepNo++;
+			}catch(Exception e) {
+				genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+				System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+				e.printStackTrace();
+				throw e;
+			}
+	}
+	
+	
+	// C2671: And Mouse over "Select Marketing" "dropdown"
+	@When("Mouse over {string} dropdown")
+	public void mouse_over_dropdown(String string) throws Throwable{
+		message= "Mouse over "+string+" dropdown";
+		try {
+			wMethods.mouseOver("dropdown", "Select Marketing");
+			test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+			System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+			stepNo++;
+			}catch(Exception e) {
+				genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+				System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+				e.printStackTrace();
+				throw e;
+			}
+	}
+	
+	
+	//C388: Browse "1000_FOREST_PARK_BLVD-250.xls"
+	@When("Browse {string}")
+	public void browse(String string) throws Throwable{
+	    message="Browse "+string;
+	    try {
+			wMethods.browse("Browse", string);
+			test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+			System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+			stepNo++;
+			}catch(Exception e) {
+				genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+				System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+				e.printStackTrace();
+				throw e;
+			}
+	}
+	
+	//C2671: Close popup
+	@Given("Close popup")
+	public void close_popup() throws Throwable{
+		message = "close popup";
+		
+		try{
+			home.closeModal();
+			test.log(LogStatus.PASS, stepNo + " - " + message + " -- executed successfully");
+			System.out.println(tcid+" : " + stepNo + " - " + message + " -- executed successfully");
+			stepNo++;
+		}catch(Exception e) {
+			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	
+	//-------------------------------------End formalities (logging etc.,)-----------------------------//
+	@Then("End of test.")
+	public void end_of_test() throws Throwable {
+	    // Write code here that turns the phrase above into concrete actions
+		message= "Ending test"+tcid;
+		try {
+		test.log(LogStatus.INFO, "End of current test.");
+		TestUtils.extent.endTest(test);
+		System.out.println("End of test "+tcid+".");
+		}catch(Exception e) {
+			genericAbstract.logFailFormalities(e,message,tcid, test, stepNo);
+			System.out.println( tcid+" : " + (stepNo) + " - " +message+ " - failed. Error:"+e.getLocalizedMessage()+e.toString());
+			e.printStackTrace();
+			throw e;
+		}
+	}
 	
 	
 	@Given("Execution complete")
 	public void execution_complete() throws Throwable {
 		
 	}
+	
 	
 	@When("End of Execution")
 	public void end_of_Execution() throws Throwable {

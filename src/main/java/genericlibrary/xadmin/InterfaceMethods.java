@@ -122,7 +122,7 @@ public interface InterfaceMethods {
 	 *            -- user id to impersonate
 	 * @return boolean true if successfully impersonated
 	 */
-	String impersonateUser(String userType, String id) throws Exception;
+	Boolean impersonateUser(String userType, String id) throws Exception;
 
 	/**
 	 * This method used to navigate to specified url.

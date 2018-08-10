@@ -73,13 +73,9 @@ public class Home extends WrapperMethods implements InterfaceMethods {
 	public By txtExpirationNO;
 
 	// Specification
-	public String agentname;
-	public String companyname;
-	public String companyname2;
-	public String address;
-	public String address2;
-	public String email;
-	public String website;
+	public String orderid;
+	public String order_id;
+	public String Cartid;
 
 	public By txtcartid;
 	public By btnsearch;
@@ -95,27 +91,6 @@ public class Home extends WrapperMethods implements InterfaceMethods {
 	public By icnDelete;
 	public int count;
 	public By deleteImage;
-
-	// Agent Smart Search
-	public static String phone1;
-	public static String phone2;
-	public static String phone3;
-	public static String email1;
-	public static String website1;
-	public static String title2;
-
-	public String Order_Id;
-	public String Total;
-	public String OrderId;
-	public String URL;
-	public String Order_id_2;
-
-	// Search MyListing Quantity
-	public String company_qty;
-	public String branch_qty;
-	public String agent_qty;
-	public String list_branch_qty;
-	public String list_agent_qty;
 
 	// iframe_headshot_or_photo
 	public By iframeHeadshot;
@@ -783,31 +758,13 @@ public class Home extends WrapperMethods implements InterfaceMethods {
 	 * 
 	 * @return boolean true if is successfully executed, else false.
 	 */
-	public boolean findOrderId() {
+	public boolean findOrderId(String id) {
 		boolean order = false;
-		String ordername = "gfl162935";
-		String ordername1 = "gfl162935_New";
 		try {
 			int counter = 2;
 			while (counter < 7) {
 				if (driver.findElement(By.xpath("//html//div[@class='tab-container']//tr[" + counter + "]//td[4]"))
-						.getText().contains(order_id)) {
-					click(By.xpath("//html//div[@class='tab-container']//tr[" + counter + "]//td[2]/a"));
-					break;
-				} else
-					counter++;
-			}
-			while (counter < 7) {
-				if (driver.findElement(By.xpath("//html//div[@class='tab-container']//tr[" + counter + "]//td[4]"))
-						.getText().contains(ordername)) {
-					click(By.xpath("//html//div[@class='tab-container']//tr[" + counter + "]//td[2]/a"));
-					break;
-				} else
-					counter++;
-			}
-			while (counter < 7) {
-				if (driver.findElement(By.xpath("//html//div[@class='tab-container']//tr[" + counter + "]//td[4]"))
-						.getText().contains(ordername1)) {
+						.getText().contains(id)) {
 					click(By.xpath("//html//div[@class='tab-container']//tr[" + counter + "]//td[2]/a"));
 					break;
 				} else
@@ -824,10 +781,11 @@ public class Home extends WrapperMethods implements InterfaceMethods {
 	 * This method checks the click specify shiptoaddress radio button
 	 * 
 	 * @return boolean true if is successfully executed, else false
+	 * @throws Exception 
 	 * 
 	 * @page:Shipping Options
 	 */
-	public boolean invalidShipAddress() throws Exception{
+	public boolean invalidShipAddress() throws Exception {
 
 		boolean invalidShipAddress = false;
 		String addressType = "Invalid Shipping Address";
@@ -852,9 +810,8 @@ public class Home extends WrapperMethods implements InterfaceMethods {
 	/**
 	 * This method Used to remove special character
 	 * 
-	 * @return boolean true if is successfully executed, else false
-	 * 
-	 * 
+	 * @param name
+	 *
 	 */
 	public String removeSpecialChar(String name) {
 
@@ -1058,13 +1015,13 @@ public class Home extends WrapperMethods implements InterfaceMethods {
 	 * 
 	 * @return boolean true if is successfully executed, else false.
 	 */
-	public boolean inCart() {
+	public boolean inCart(String id) {
 		boolean cart = false;
 		try {
 			int counter = 2;
 			while (counter < 7) {
 				if (driver.findElement(By.xpath("//html//div[@class='tab-container']//tr[" + counter + "]//td[4]"))
-						.getText().contains(order_id)) {
+						.getText().contains(id)) {
 					click(By.xpath("//html//div[@class='tab-container']//tr[" + counter + "]//td[1]/a"));
 					break;
 				} else
@@ -1140,6 +1097,8 @@ public class Home extends WrapperMethods implements InterfaceMethods {
 			// List<WebElement> options;
 			comboBox = getProperty("next_account_manage_lists", "combobox");
 
+			textToSelect=textToSelect.split("\\(")[0].trim();
+			   textToSelect=textToSelect.split("\\,")[0].trim();
 			if (driver.getCurrentUrl().contains("account/agent.php")
 					|| (driver.getCurrentUrl().contains("account/branch.php"))) {
 				click(path);

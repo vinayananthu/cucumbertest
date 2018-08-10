@@ -6,6 +6,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.openqa.selenium.JavascriptExecutor;
 
@@ -25,48 +28,6 @@ public class WrapperMethods extends GenericAbstract {
 	public By lnkMobileAdCancel;
 	public By rdoShipOrderToMe;
 
-	// Store Values
-	public String FedExType;
-	public String OfficeAddress;
-	public String EstimatedArrival;
-	public String Price;
-
-	public static String mlsid;
-	public static String order_id;
-	public static String orderid;
-	public static String orderid1;
-	public static String order_id1;
-	public static String order_id2;
-	public static String Order_Id2;
-
-	public static String Modified_date;
-	public static String Created_date;
-	public static String modification_date;
-	public static String creation_date;
-	public static String amountdue;
-	public static String AmountDue;
-	public static String styleid;
-	public static String basekeyword;
-	public static String Addresses_selected;
-	public static String pdf_price;
-	public static String Amount;
-	public static String Qty;
-	public static String Templatename;
-	public static String Ordername;
-	public static String Cartid;
-	public static String NameThisOrder;
-	public static String line5;
-	public static String line6;
-	public static String line7;
-	public static String line8;
-	public static String MLS_ID;
-	public static String Name_Licensed_As_Agent1;
-	public static String Phone_Number_Agent1;
-	public static String Email_Address_Agent1;
-	public static String Name_Licensed_As_Agent2;
-	public static String Phone_Number_Agent2;
-	public static String Email_Address_Agent2;
-	public static String listname;
 	// View Larger
 	public By icnTopViewLarger;
 	public By icnBottomViewLarger;
@@ -74,16 +35,22 @@ public class WrapperMethods extends GenericAbstract {
 	// photo_headshot
 	public String photo_headshot_name;
 	public By lblsearchtemplate;
+	public By lnkdirectories;
 
-	public static Home homeObject = new Home();
-
+	// Store Values
 	public String storeVal;
+	public String FedExType;
 
 	// Popup Boxes
 	public By lnkPreview;
 	public By lnkViewAsPDfPopUp;
 	public By ddlOffice;
 	public By lblOrderId;
+//	public String mlsid;
+//	public String amountdue;
+//	public String order_id;
+
+	public static Home homeObject = new Home();
 
 	/**
 	 * This method is used to click on a specific element when the element is
@@ -95,12 +62,12 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param elementName
 	 *            -- Name of the element Eg. Verify, Start a New Order
 	 * @return boolean true if successfully clicked on the specified element
+	 * @throws Exception 
 	 */
 
-	public Boolean click(String elementType, String elementName) throws Exception{
+	public Boolean click(String elementType, String elementName) throws Exception {
 
-
-
+		try {
 			if (elementName.equalsIgnoreCase("ok")) {
 				handleAlert();
 				return true;
@@ -109,24 +76,9 @@ public class WrapperMethods extends GenericAbstract {
 				scroll(path);
 				click(path);
 				return true;
-
-			} else if (elementName.toLowerCase().equalsIgnoreCase("place/edit")
-					|| elementName.toLowerCase().equalsIgnoreCase("incart")) {
-				if (elementName.contains("incart")) {
-					homeObject.inCart();
-				} else if (storeVal != null) {
-					homeObject.findOrderId();
-				} else {
-					By path = getPropertyFile(homeObject.removeSpecialChar(convertPath(elementType, elementName)));
-					scroll(path);
-					click(path);
-				}
+			} else if (elementName.equalsIgnoreCase("browse")) {
 				return true;
-			} /*
-				 * else if (elementName.equalsIgnoreCase("Back")) { driver.navigate().back();
-				 * JavascriptExecutor js = (JavascriptExecutor) driver;
-				 * js.executeScript("window.scrollBy(0,-200)"); return true; }
-				 */ else if (homeObject.removeSpecialChar(elementName).equalsIgnoreCase("confirm the order deletion")) {
+			} else if (homeObject.removeSpecialChar(elementName).equalsIgnoreCase("confirm the order deletion")) {
 				handleAlert();
 				handleAlert();
 				return true;
@@ -138,7 +90,7 @@ public class WrapperMethods extends GenericAbstract {
 					&& (driver.getCurrentUrl().contains("next/checkout.php"))) {
 				homeObject.deleteCreditCard();
 				return true;
-			} else if (elementName.equalsIgnoreCase("ship order to me")) {
+			} else if (elementName.equalsIgnoreCase("shipordertome")) {
 				rdoShipOrderToMe = getProperty("next_distribution", "rdoshipordertome");
 				if (isElementPresent(rdoShipOrderToMe)) {
 					scroll(rdoShipOrderToMe);
@@ -192,8 +144,6 @@ public class WrapperMethods extends GenericAbstract {
 			case "delete":
 				if (driver.getCurrentUrl().contains("next/account/headshot.php")) {
 					homeObject.manageDeleteImage();
-				} else if (driver.getCurrentUrl().contains("next/start.php")) {
-					homeObject.verifyAndClickDeleteIcon();
 				} else {
 					if (isElementPresent(path)) {
 						scroll(path);
@@ -220,6 +170,10 @@ public class WrapperMethods extends GenericAbstract {
 				click(path);
 				lblsearchtemplate = getProperty("next_xadmin_templates_search", "lblsearchtemplate");
 				switchToNewWindow("Template Management", lblsearchtemplate, "Search Template");
+				break;
+			case "Directories":
+				lnkdirectories = getProperty("next_categories", "lnkdirectories");
+				click(path);
 				break;
 			case "approve":
 				scroll(path);
@@ -258,12 +212,24 @@ public class WrapperMethods extends GenericAbstract {
 			case "finished":
 				homeObject.uploadFinished(path);
 				break;
+			case "usecreditcard":
+			case "usecreditcard1":
+			case "usecreditcard2":
+				if (!driver.findElement(path).isSelected()) {
+					click(path);
+				}
+				return true;
 			default:
 				scroll(path);
 				click(path);
 			}
 			return true;
-		
+		} catch (Exception e) {
+//			Assert.fail("could not type" + elementName);
+//			e.printStackTrace();
+			throw e;
+		}
+//		return false;
 	}
 
 	/**
@@ -281,12 +247,18 @@ public class WrapperMethods extends GenericAbstract {
 	 *            -- Details of the element to be acted on Eg. Postcards, thumbnail,
 	 *            etc
 	 * @return boolean true if successfully clicked on the specified element
+	 * @throws Exception 
 	 */
 
-	public Boolean click(String identifierType, String identifierDetail, String elementDetail) throws Exception{
-		
+	public Boolean click(String identifierType, String identifierDetail, String elementDetail) throws Exception {
+		try {
 			if (elementDetail.toLowerCase().equalsIgnoreCase("popup")) {
-				if (driver.getCurrentUrl().contains("/next/account/history.php")) {
+				if(driver.getCurrentUrl().contains("/next/account/listing")) {
+					By txtPath = getPropertyFile(
+							homeObject.removeSpecialChar(convertPath(identifierType, identifierDetail.concat(elementDetail))));
+					click(txtPath);
+					return true;
+				}else if (driver.getCurrentUrl().contains("/next/account/history.php")) {
 					By path = getPropertyFile(
 							homeObject.removeSpecialChar(convertPath(identifierType, identifierDetail)));
 					click(path);
@@ -304,6 +276,14 @@ public class WrapperMethods extends GenericAbstract {
 					click(icnBottomViewLarger);
 					return true;
 				}
+			} else if (identifierDetail.toLowerCase().equalsIgnoreCase("place/edit")
+					|| identifierDetail.toLowerCase().equalsIgnoreCase("incart")) {
+				if (identifierDetail.contains("incart")) {
+					homeObject.inCart(elementDetail);
+				} else {
+					homeObject.findOrderId(elementDetail);
+				}
+				return true;
 			}
 			By elementPath;
 			if ((identifierDetail.equalsIgnoreCase("delete")) || (identifierDetail.equalsIgnoreCase("make default"))
@@ -382,7 +362,12 @@ public class WrapperMethods extends GenericAbstract {
 			scroll(elementPath);
 			click(elementPath);
 			return true;
-		
+		} catch (Exception e) {
+//			Assert.fail("could not type" + elementDetail);
+//			e.printStackTrace();
+			throw e;
+		}
+//		return false;
 	}
 
 	/**
@@ -396,9 +381,12 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param textToType
 	 *            -- Value to type in the textbox Eg. 123123123, 60010
 	 * @return boolean true if successfully typed into the field
+	 * @throws Exception 
 	 */
 
 	public Boolean type(String elementName, String textToType) throws Exception {
+
+		try {
 
 			String val = elementName.replaceAll("#", "");
 
@@ -444,6 +432,12 @@ public class WrapperMethods extends GenericAbstract {
 			}
 
 			return true;
+		} catch (Exception e) {
+//			Assert.fail("could not type" + textToType);
+//			e.printStackTrace();
+			throw e;
+		}
+//		return false;
 	}
 
 	/**
@@ -455,12 +449,29 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param elementName
 	 *            -- Name of the element Eg. uploaded list, FedEx Ground, etc.
 	 * @return boolean true if successfully selected
+	 * @throws Exception 
 	 *
 	 */
 
-	public Boolean select(String elementType, String elementName) throws Exception{
-
+	public Boolean select(String elementType, String elementName) throws Exception {
+		try {
 			By path = getPropertyFile(homeObject.removeSpecialChar(convertPath(elementType, elementName)));
+
+			if (elementType.equalsIgnoreCase("link") || elementType.equalsIgnoreCase("button")) {
+				scroll(path);
+				click(path);
+				return true;
+
+			}
+
+			if (elementType.equalsIgnoreCase("checkbox")) {
+				scroll(path);
+				if (!driver.findElement(path).isSelected()) {
+					click(path);
+				}
+				return true;
+
+			}
 			String name = elementName.replaceAll("\\s", "").toLowerCase();
 			switch (name) {
 			case "fedexground":
@@ -475,6 +486,13 @@ public class WrapperMethods extends GenericAbstract {
 				click(path);
 			}
 			return true;
+
+		} catch (Exception e) {
+//			Assert.fail("could not select" + elementName);
+//			e.printStackTrace();
+			throw e;
+		}
+		
 	}
 
 	/**
@@ -489,14 +507,16 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param textToSelect
 	 *            -- Value to select Eg. ERA, Pay by Credit or Debit Card, etc.
 	 * @return boolean true if the value is successfully selected
+	 * @throws Exception 
 	 */
 
-	public Boolean select(String elementType, String elementName, String textToSelect) throws Exception{
-		
+	public Boolean select(String elementType, String elementName, String textToSelect) throws Exception {
+		try {
 			String rmexclamatory = elementName.replaceAll("!", "");
 			String rmslash = rmexclamatory.replaceAll("/", "");
 			String name = rmslash.replaceAll("\\s", "").toLowerCase();
 			By path = getPropertyFile(homeObject.removeSpecialChar(convertPath(elementType, name)));
+
 			if (driver.findElements(path).size() != 0) {
 				scroll(path);
 				click(path);
@@ -527,7 +547,6 @@ public class WrapperMethods extends GenericAbstract {
 					click("textbox", "officessearch");
 					type("officessearch", textToSelect);
 					click("checkbox", "officesfilter");
-
 					break;
 				case "selectagents":
 					click(path);
@@ -535,13 +554,23 @@ public class WrapperMethods extends GenericAbstract {
 					type("userssearch", textToSelect);
 					click("checkbox", "usersfilter");
 					break;
+				case "filter2":
+					click(path);
+					click("textbox", "filtersearch");
+					type("filtersearch", textToSelect);
+					click("checkbox", "Filter 2");
+					break;
 				case "selectoffice":
 				case "office":
 				case "user":
 				case "searchagent":
 				case "searchuser":
 				case "selectuser":
-					if (driver.getCurrentUrl().contains("account/manage_lists.php")) {
+				case "searchbyoffice":
+				case "chooseuser":
+					if (driver.getCurrentUrl().contains("account/manage_lists.php")
+							|| driver.getCurrentUrl().contains("next/account/agent.php")
+							|| driver.getCurrentUrl().contains("/next/account/branch.php")) {
 						homeObject.comboBoxSelect(path, textToSelect);
 					} else {
 						for (int i = 0; i < options.size(); i++) {
@@ -555,6 +584,7 @@ public class WrapperMethods extends GenericAbstract {
 					break;
 				case "selectcompany":
 				case "company":
+				case "frequency":
 					for (int i = 0; i < options.size(); i++) {
 						String val = options.get(i).getText().trim();
 						if (val.equalsIgnoreCase(textToSelect.trim())) {
@@ -591,6 +621,10 @@ public class WrapperMethods extends GenericAbstract {
 				}
 			}
 			return true;
+		} catch (Exception e) {
+			throw e;
+		}
+//		return false;
 	}
 
 	/**
@@ -603,34 +637,33 @@ public class WrapperMethods extends GenericAbstract {
 	 *            -- Value of the expected result Eg. next/index.php ,
 	 *            template_name, etc.
 	 * @return boolean true if verified successfully
+	 * @throws Exception 
 	 */
 	public Boolean verifyExpectedResult(String resultType, String resultValue) throws Exception {
 		Boolean returnValue = false;
-
+		try {
 			switch (resultType.toLowerCase()) {
 			case "url":
 				// get current url and verify
-				if (driver.getCurrentUrl().contains(resultValue.trim())) {
+				Thread.sleep(1000);
+				String url = driver.getCurrentUrl();
+				if (url.contains(resultValue.trim())) {
 					return true;
 				} else {
 					returnValue = false;
 				}
+				break;
 			case "heading":
-				driver.findElement(getPropertyFile(convertPath("label", resultType))).getText().contains(resultValue);
+				driver.findElement(getPropertyFile(homeObject.removeSpecialChar(convertPath("label", resultType))))
+						.getText().contains(resultValue);
 				break;
 			case "header":
 				// get current page title
-				if(!driver.getTitle().toLowerCase().equals(resultValue.toLowerCase())){
-					throw new Exception(" Expected header -----> "+resultValue.toLowerCase()+" Actual header ----> "+driver.getTitle().toLowerCase());
-				}
 				Assert.assertEquals(driver.getTitle().toLowerCase(), resultValue.toLowerCase());
 				break;
 			case "status":
-				By path = getPropertyFile(convertPath("label", resultType));
+				By path = getPropertyFile(homeObject.removeSpecialChar(convertPath("label", resultType)));
 				if (resultValue.equalsIgnoreCase("CANCELLED")) {
-					if(!getText(path).equals(resultValue)){
-						throw new Exception("Expected header -----> "+resultValue+" Actual header ----> "+getText(path));
-					}
 					Assert.assertEquals(getText(path), resultValue);
 				}
 				break;
@@ -639,21 +672,28 @@ public class WrapperMethods extends GenericAbstract {
 				break;
 			case "ordername":
 				if (driver.getCurrentUrl().contains("/next/start.php")) {
-					By path1 = getPropertyFile(convertPath("label", resultType));
+					By path1 = getPropertyFile(homeObject.removeSpecialChar(convertPath("label", resultType)));
 					if (resultValue.equalsIgnoreCase("Test1")) {
-						if(!getText(path1).equals(resultValue)){
-							throw new Exception("Expected header -----> "+resultValue+" Actual header ----> "+getText(path1));
-						}
 						Assert.assertEquals(getText(path1), resultValue);
-					} /*
-						 * else if (resultValue.equalsIgnoreCase("Test1")) {
-						 * Assert.assertEquals(getText(path1), resultValue); }
-						 */
+					}
 				}
 				break;
+
+			case "alert":
+				WebDriverWait wait = new WebDriverWait(driver, 100);
+				if (wait.until(ExpectedConditions.alertIsPresent()) != null) {
+					System.out.println("alert was present");
+					return true;
+				} else {
+					System.out.println("alert was not present");
+					return false;
+				}
 			default:
 				throw new RuntimeException("Unknown URL :: " + resultType);
 			}
+		} catch (Exception e) {
+		throw e;
+		}
 		return returnValue;
 	}
 
@@ -669,77 +709,107 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param resultState
 	 *            -- State expected Eg. present, open, etc.
 	 * @return boolean true if verified successfully
+	 * @throws Exception 
 	 */
-	public Boolean verifyExpectedResult(String resultType, String resultValue, String resultState) throws Exception {
-		Boolean returnValue = false;
-			if (resultValue.contains("bigger") || resultValue.contains("equal") || resultValue.contains("less")) {
-				String result = resultType.split("results")[0].trim();
-				String text = resultState.split("results")[0].trim();
-				int sourceQty = Integer.parseInt(result);
-				int targetQty = Integer.parseInt(text);
-				if (sourceQty >= targetQty || sourceQty <= targetQty || sourceQty > targetQty) {
-					return true;
-				}
-			}
-			String value = resultValue.replaceAll("!", "");
-			By path = getPropertyFile(convertPath(resultType, value));
-			// scroll(path);
-			if (resultValue.equalsIgnoreCase("Error") || resultState.startsWith("Error!")
-					|| resultValue.equalsIgnoreCase("thank") || resultValue.equalsIgnoreCase("Warning")) {
-				By val = getPropertyFile(convertPath(resultType, resultValue));
-				String getError = getText(val).toLowerCase();
-				String errorMessage = getError.replaceAll("\n", "");
-				if(!resultState.toLowerCase().equals(errorMessage.toLowerCase())){
-					throw new Exception("Expected: "+resultState+", Actual: "+errorMessage);
-				}
-				Assert.assertEquals(resultState.toLowerCase(), errorMessage.toLowerCase());
-				return true;
-			}
-			switch (resultState.toLowerCase()) {
+	public Boolean verifyExpectedResult(String elementType, String elementName, String elementState) throws Exception {
+		boolean returnvalue = false;
+		try {
 
+			By elementPath = null;
+			String alertText = null;
+			if (elementType.equalsIgnoreCase("text") || elementType.equalsIgnoreCase("option")
+					|| elementType.equalsIgnoreCase("alert") || elementType.equalsIgnoreCase("link")
+					|| elementType.equalsIgnoreCase("form") || elementType.contains("Order")
+					|| elementType.contains("photo") || elementType.equalsIgnoreCase("popup")
+					||elementType.equalsIgnoreCase("link")
+					|| elementType.equalsIgnoreCase("row")
+					|| elementType.contains("field")) {
+				if (elementName.contains(".")) {
+					elementName = elementName.substring(0, elementName.indexOf("."));
+					if (elementName.contains("!")) {
+						if (!elementName.trim().endsWith("!")) {
+							elementName = elementName.split("!")[1].trim();
+						}
+					}
+				} else {
+					if (elementName.contains("Alert")) {
+						elementName = elementName.replace("Alert", "").trim();
+					}
+
+				}
+				elementPath = By.xpath("//*[contains(text(),\"" + elementName + "\")]");
+			} if (elementType.equalsIgnoreCase("message")||elementType.equalsIgnoreCase("confirmation")) {
+				driver.switchTo().alert();
+				alertText = driver.switchTo().alert().getText();
+			} else {
+			    if (elementName.equalsIgnoreCase("Cart ID:")) {
+					elementPath = By.xpath("//*[contains(text(),\"" + elementName + "\")]");
+				} else {
+					elementPath = getPropertyFile(homeObject.removeSpecialChar(convertPath(elementType, elementName)));
+				}
+			}if(elementName.contains("results for")) {
+				elementPath = By.xpath("//*[contains(text(),\'" + elementName + "\')]");
+			} 
+			switch (elementState.toLowerCase()) {
+			case "visible":
+			case "present":
+			case "displayed":
 			case "open":
 			case "available":
-			case "present":
-				if (isElementPresent(path)) {
-					return isElementPresent(path);
-				} else {
-					throw new Exception(resultValue+" is not available.");
-//					returnValue = false;
+			case "tablevalue":
+			case "appears":
+				if (elementType.equalsIgnoreCase("message")||elementType.equalsIgnoreCase("confirmation")) {
+					Assert.assertEquals(elementName.toLowerCase(), alertText.toLowerCase());
+					return true;
+				} else if (isElementPresent(elementPath)) {
+					Thread.sleep(1000);
+					return true;	
+					
+				} else if(elementName.contains("current_date")) {
+					elementPath = getPropertyFile(homeObject.removeSpecialChar(convertPath(elementType, elementName)));
+					String getTextValue = getText(elementPath);
+					storeVal = getTextValue;
+				}else {
+					return false;
 				}
-
 			case "close":
 			case "not available":
-				return !(isElementPresent(path));
-			case "selected":
-
-				if (driver.findElement(path).isSelected()) {
-					return true;
-				} else {
-					returnValue = false;
-				}
+			case "not visible":
+				return !(isElementPresent(elementPath));
+			case "enabled":
 			case "active":
-				if (driver.findElement(path).isEnabled()) {
+			case "set":
+			case "clicked":
+				if (driver.findElement(elementPath).isEnabled()) {
 					return true;
 				} else {
-					returnValue = false;
+					return false;
 				}
-
 			case "inactive":
-				if (!driver.findElement(path).isEnabled()) {
+				if (!driver.findElement(elementPath).isEnabled()) {
 					return true;
 				} else {
-					returnValue = false;
+					return false;
 				}
 			case "unavailable":
-				if (!isElementPresent(path)) {
+				if (!isElementPresent(elementPath)) {
 					return true;
 				}
 				break;
-
+			case "selected":
+				if (driver.findElement(elementPath).isSelected()) {
+					return true;
+				} else {
+					return false;
+				}
 			default:
-				throw new RuntimeException("Unknown URL :: " + resultType);
+				throw new RuntimeException("Unknown URL :: " + elementType);
 			}
-		return returnValue;
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return returnvalue;
 	}
 
 	/**
@@ -750,74 +820,121 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param resultState
 	 * @param text
 	 * @return boolean true if verified successfully
+	 * @throws Exception 
 	 */
-	public Boolean verifyExpectedResult(String resultType, String resultValue, String resultState, String text)  throws Exception{
-		Exception e = new Exception("");
-		
+	public Boolean verifyExpectedResult(String resultType, String resultValue, String resultState, String text) throws Exception {
 		Boolean returnValue = false;
+		try {
 			if (resultState.contains("present")) {
 				By elementPath;
-				By categoryPath = getPropertyFile(convertPath(resultType, resultValue));
+				By categoryPath = getPropertyFile(homeObject.removeSpecialChar(convertPath(resultType, resultValue)));
 				String path1 = categoryPath.toString().replace("$1$", text);
 				String values = path1.replace("By.xpath:", "");
 				elementPath = By.xpath(values);
 				if (isElementPresent(elementPath))
 					return isElementPresent(elementPath);
 				return true;
+			} else if (resultState.toLowerCase().contains("equals")
+					|| resultState.toLowerCase().contains("greater than")) {
+				if (driver.getCurrentUrl().contains("next/mylisting_results.php")) {
+					String result = resultValue.split("results")[0].trim();
+					String result2 = text.split("results")[0].trim();
+					int sourceQty = Integer.parseInt(result);
+					int targetQty = Integer.parseInt(result2);
+					if (sourceQty >= targetQty || sourceQty <= targetQty || sourceQty > targetQty) {
+						return true;
+					}
+				}
 			}
-			By path = getPropertyFile(convertPath(resultType, resultValue));
 			switch (resultState.toLowerCase()) {
+			case "equals":
+			case "visible":
+			case "under":
+			case "enabled":
+			case "displayed":
+				By txtPath;
+				if (resultType.contains("radio")) {
+					txtPath = getPropertyFile(
+							homeObject.removeSpecialChar(convertPath(resultType, resultValue.concat(text))));
+				} else {
+					txtPath = getPropertyFile(homeObject.removeSpecialChar(convertPath(resultType, resultValue)));
+				}
+				if (driver.getCurrentUrl().contains("address_upload/view")
+						|| driver.getCurrentUrl().contains("xadmin/orders/index.php")) {
+					String path1 = txtPath.toString().replace("$1$", text);
+					String values = path1.replace("By.xpath:", "");
+					txtPath = By.xpath(values);
+				}
+				if (resultType.equalsIgnoreCase("field") || resultType.equalsIgnoreCase("textbox")) {
+					Assert.assertEquals(text.toLowerCase().trim(), getAttribute(txtPath).toLowerCase().trim());
+				} else if (text.equalsIgnoreCase("selected")||resultState.equalsIgnoreCase("enabled")) {
+					if (driver.findElement(txtPath).isSelected()) {
+						return true;
+					}
+				} else {
+					Assert.assertEquals(text.toLowerCase().trim().replace("$", ""),
+							getText(txtPath).toLowerCase().replace("$", "").trim());
+				}
+				return true;
 			case "field":
 			case "set":
 			case "specification":
+			case "selected":
+				By path;
+				if (resultType.contains("radio")) {
+					path = getPropertyFile(
+							homeObject.removeSpecialChar(convertPath(resultType, resultValue.concat(text))));
+					if (driver.findElement(path).isSelected()) {
+						return true;
+					}
+				}
+			   path = getPropertyFile(homeObject.removeSpecialChar(convertPath(resultType, resultValue)));
+
+				if (resultType.toLowerCase().equalsIgnoreCase("dropdown")) {
+					Select select = new Select(driver.findElement(path));
+					WebElement option = select.getFirstSelectedOption();
+					String defaultItem = option.getText();
+					text.contains(defaultItem);
+					return true;
+				}
 				if (driver.getCurrentUrl().contains("next/account/agent.php")) {
 					JavascriptExecutor js = (JavascriptExecutor) driver;
 					js.executeScript("window.scrollBy(0,500)");
-				}
-				if(!text.toLowerCase().trim().equals(getAttribute(path).toLowerCase().trim())){
-					throw new Exception("Expected----> "+text.toLowerCase().trim()+", Actual----> "+getAttribute(path).toLowerCase().trim());
 				}
 				Assert.assertEquals(text.toLowerCase().trim(), getAttribute(path).toLowerCase().trim());
 				return true;
 			case "value":
 			case "text":
-				if(!text.toLowerCase().trim().equals(getText(path).toLowerCase().trim())){
-					throw new RuntimeException("Expected----> "+text+", actual----> "+getText(path).toLowerCase().trim());
-				}
-				Assert.assertEquals(text.toLowerCase().trim(), getText(path).toLowerCase().trim());
+				By path1 = getPropertyFile(homeObject.removeSpecialChar(convertPath(resultType, resultValue)));
+				Assert.assertEquals(text.toLowerCase().trim(), getText(path1).toLowerCase().trim());
 				return true;
 			case "price":
+				By path2 = getPropertyFile(homeObject.removeSpecialChar(convertPath(resultType, resultValue)));
 				if (driver.getCurrentUrl().contains("mylisting_results.php")) {
-					String listingPrice = getText(path).replace("$", "");
-					String price = listingPrice.replace(",", "");
-					if(!text.toLowerCase().trim().equals(price)){
-						throw new RuntimeException("Expected----> "+text.toLowerCase().trim()+", actual----> "+price);
-					}
-					Assert.assertEquals(text.toLowerCase().trim(), price);
-
-				} else if (driver.getCurrentUrl().contains("build.php")) {
-					String listingPrice = getAttribute(path).replace("$", "");
-					String price = listingPrice.replace(",", "");
-					if(!text.toLowerCase().trim().equals(price)){
-						throw new RuntimeException("Expected----> "+text.toLowerCase().trim()+", actual----> "+price);
-					}
-					Assert.assertEquals(text.toLowerCase().trim(), price);
-				} else {
-
-					String price = getText(path).replaceAll("$", "");
-					String Price = price.replace(",", "");
-					Price = Price.substring(1, 5);
-					if(!text.toLowerCase().trim().equals(Price)){
-						throw new RuntimeException("Expected----> "+text.toLowerCase().trim()+", actual----> "+Price);
-					}
+					String listingPrice = getText(path2).replace("$", "");
+					String Price = listingPrice.replace(",", "");
 					Assert.assertEquals(text.toLowerCase().trim(), Price);
 
+				} else if (driver.getCurrentUrl().contains("build.php")) {
+					String listingPrice = getAttribute(path2).replace("$", "");
+					String Price = listingPrice.replace(",", "");
+					Assert.assertEquals(text.toLowerCase().trim(), Price);
+				} else {
+
+					String price = getText(path2).replaceAll("$", "");
+					String Price = price.replace(",", "");
+					Price = Price.substring(1, 5);
+					Assert.assertEquals(text.toLowerCase().trim(), Price);
 				}
 				return true;
 
 			default:
 				throw new RuntimeException("Unknown URL :: " + resultType);
 			}
+		} catch (Exception e) {
+			throw e;
+		}
+//		return returnValue;
 	}
 
 	/**
@@ -829,11 +946,11 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param id
 	 *            -- user id to impersonate
 	 * @return boolean true if successfully impersonated
+	 * @throws Exception 
 	 */
-	public String impersonateUser(String userType, String id) throws Exception {
+	public Boolean impersonateUser(String userType, String id) throws Exception {
 		Boolean autologin = false;
-		String response="";
-
+		try {
 			txtSearchLogin = getProperty("next_index", "txtsearchlogin");
 			lnkLogin = getProperty("next_index", "lnklogin");
 			btnSearchLogin = getProperty("next_index", "btnsearchlogin");
@@ -849,8 +966,11 @@ public class WrapperMethods extends GenericAbstract {
 			homeObject.emptyCart();
 			Assert.assertEquals("Logout", getText(lnkLogout));
 			autologin = true;
-			response ="pass";
-			return response;
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return autologin;
 	}
 
 	/**
@@ -859,14 +979,17 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param url
 	 *            -- url to navigate
 	 * @return boolean true if navigated successfully
+	 * @throws Exception 
 	 */
 
 	public Boolean navigateTo(String url) throws Exception {
 		boolean navigateToXadmin = false;
-
+		try {
 			String name = url.replaceAll("\\s", "").toLowerCase();
 			switch (name) {
 			case "xadmin":
+			case "xadmin_home_page":
+			case "xadminhomepage":
 				loginToXadmin();
 				break;
 			case "back":
@@ -879,7 +1002,6 @@ public class WrapperMethods extends GenericAbstract {
 					return true;
 				} else {
 					driver.navigate().back();
-					driver.navigate().back();
 				}
 				break;
 			case "forward":
@@ -891,6 +1013,9 @@ public class WrapperMethods extends GenericAbstract {
 			}
 
 			navigateToXadmin = true;
+		} catch (Exception e) {
+			throw e;
+		}
 		return navigateToXadmin;
 	}
 
@@ -902,10 +1027,13 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param fileName
 	 *            -- File name that needs to be uploaded
 	 * @return boolean true if successfully browsed the file
+	 * @throws Exception 
 	 *
 	 */
 
-	public Boolean browse(String elementName, String fileName) throws Exception{
+	public Boolean browse(String elementName, String fileName) throws Exception {
+
+		try {
 
 			String getUrl = driver.getCurrentUrl();
 			String[] arrOfUrl = getUrl.split("/", 4);
@@ -915,7 +1043,7 @@ public class WrapperMethods extends GenericAbstract {
 				homeObject.uploadFiles(elementName, fileName);
 				return true;
 			}
-			By path = getPropertyFile(convertPath("Button", elementName));
+			By path = getPropertyFile(homeObject.removeSpecialChar(convertPath("Button", elementName)));
 			if (currentUrl.contains("next/account/headshot.php")) {
 				WebElement uploadElement = driver.findElement(path);
 				// enter the file path onto the file-selection input field
@@ -926,6 +1054,10 @@ public class WrapperMethods extends GenericAbstract {
 			// enter the file path onto the file-selection input field
 			uploadElement.sendKeys(readProperty("browseUpload") + fileName + "");
 			return true;
+		} catch (Exception e) {
+			throw e;
+		}
+//		return false;
 	}
 
 	/**
@@ -937,13 +1069,14 @@ public class WrapperMethods extends GenericAbstract {
 	 *            -- Name of the element
 	 * @return boolean true if successfully mouse over the element
 	 */
-	public Boolean mouseOver(String categorytype, String categoryname) throws Exception{
+	public Boolean mouseOver(String categorytype, String categoryname) {
 		boolean returnValue = false;
-			categoryname = categoryname.replaceAll("#", "");
-			String category = convertPath(categorytype, categoryname);
-			By categorypath = getPropertyFile(category);
-			homeObject.mouseOverClick(categorypath);
+		try {
+			By path = getPropertyFile(homeObject.removeSpecialChar(convertPath(categorytype, categoryname)));
+			homeObject.mouseOverClick(path);
 			returnValue = true;
+		} catch (Exception e) {
+		}
 		return returnValue;
 	}
 
@@ -954,19 +1087,19 @@ public class WrapperMethods extends GenericAbstract {
 	 *            -- Type of the element
 	 * @param elementName
 	 *            -- Name of the element
-	 * @return boolean true if is successfully executed, else false
+	 * @throws Exception 
 	 */
 
 	public String store(String identifierType, String identifierName) throws Exception {
 
 		String storeVal = null;
-
+		try {
 			if (identifierName.contains("URL")) {
 				String Url = driver.getCurrentUrl();
 				return Url;
 			}
 			By path = getPropertyFile(homeObject.removeSpecialChar(convertPath(identifierType, identifierName)));
-			String name = identifierName.replaceAll("\\s", "").toLowerCase();
+			String name = identifierName.replaceAll("\\s", "").toLowerCase().trim();
 			switch (name.toLowerCase()) {
 			case "orderid":
 			case "order_id":
@@ -1015,16 +1148,23 @@ public class WrapperMethods extends GenericAbstract {
 			case "line7":
 			case "line8":
 			case "nameyourlist:":
-				mlsid = getAttribute(path);
+			case "phone":
+			case "zip":
+			case "address1":
+			case "city":
+			case "name":
+			case "company":
+				String val = getAttribute(path);
 				if (name.equalsIgnoreCase("basekeywords")) {
-					mlsid = mlsid.split(",")[0];
+					String getVal = val.split(",")[0];
+					storeVal = getVal;
 				}
-				storeVal = mlsid;
+				storeVal = val;
 
 				break;
 			case "officeaddress":
 				String getValue = getText(path);
-				OfficeAddress = getValue.replaceAll("\n", ",");
+				String OfficeAddress = getValue.replaceAll("\n", ",");
 				storeVal = OfficeAddress;
 				break;
 			case "amountdueforthisorder":
@@ -1034,26 +1174,57 @@ public class WrapperMethods extends GenericAbstract {
 				String AmountDue = getText(path);
 				String amount = AmountDue.replaceAll("[\\$,]", "");
 				double value = Double.valueOf(amount);
-				amountdue = String.valueOf(value);
+				String amountdue = String.valueOf(value);
 				storeVal = amountdue;
 				break;
 			case "addressesselected":
 			case "addressesselected:":
-				Addresses_selected = getText(path);
+				String Addresses_selected = getText(path);
 				storeVal = Addresses_selected;
 				break;
 			case "pdfprice":
-				pdf_price = getText(path);
+				String pdf_price = getText(path);
 				storeVal = pdf_price;
 				break;
 			case "cartid":
 				String cart_Id = getText(path);
-				Cartid = cart_Id.substring(9, 17);
+				String Cartid = cart_Id.substring(9, 17);
 				storeVal = Cartid;
+				break;
+				
+			case "state":
+		    case "country":
+				Select select = new Select(driver.findElement(path));
+				WebElement option = select.getFirstSelectedOption();
+				String defaultItem = option.getText();
+				storeVal = defaultItem;
+				break;
+
+			case "selectanoffice":
+			case "selectauser":
+				Select drpbranch = new Select(driver.findElement(path));
+				List<WebElement> elementCount = drpbranch.getOptions();
+				int iSize = elementCount.size();
+
+				for (int i = 0; i < iSize; i++) {
+					String sValue = elementCount.get(i).getText();
+					if (sValue.equalsIgnoreCase("Demo Branch (30200DEMOB)")
+							| sValue.equalsIgnoreCase("Smith, Jane (438179APRI)")) {
+						System.out.println(sValue);
+						String splitdrp = sValue.split("\\(")[0].trim();
+						splitdrp = splitdrp.split("\\,")[0].trim();
+						System.out.println(splitdrp);
+						return splitdrp;
+
+					}
+				}
 				break;
 			default:
 				throw new RuntimeException("Unknown Root elementName :: " + identifierName);
 			}
+		} catch (Exception e) {
+			throw e;
+		}
 		return storeVal;
 
 	}
@@ -1067,14 +1238,15 @@ public class WrapperMethods extends GenericAbstract {
 	 *            -- Detail of the element
 	 * @param identifierName
 	 *            -- Name of the element
-	 * @return boolean true if is successfully executed, else false
+	 * @throws Exception 
 	 */
 
-	public String store(String identifierType, String identifierDetail, String identifierName) throws Exception{
+	public String store(String identifierType, String identifierDetail, String identifierName) throws Exception {
 
 		String storeVal = null;
+		try {
 			String elementName = identifierDetail.concat(identifierName).toLowerCase();
-			By path = getPropertyFile(convertPath(identifierType, elementName));
+			By path = getPropertyFile(homeObject.removeSpecialChar(convertPath(identifierType, elementName)));
 			String name = identifierName.replaceAll(" ", "").toLowerCase();
 			switch (name.toLowerCase()) {
 			case "fedextype":
@@ -1087,6 +1259,9 @@ public class WrapperMethods extends GenericAbstract {
 			default:
 				throw new RuntimeException("Unknown Root elementName :: " + identifierName);
 			}
+		} catch (Exception e) {
+			throw e;
+		}
 		return storeVal;
 
 	}
@@ -1104,13 +1279,19 @@ public class WrapperMethods extends GenericAbstract {
 	 * @page:Customize your Order
 	 */
 
-	public Boolean set(String elementType, String elementName, String value) throws Exception {
+	public Boolean set(String elementType, String elementName, String value) {
 		boolean returnValue = false;
+		try {
+
 			switch (elementType.toLowerCase()) {
 			case "radio":
-				String eName = homeObject.removeSpecialChar(elementName).concat(homeObject.removeSpecialChar(value))
-						.toLowerCase();
-				click(elementType, eName);
+				String eName;
+				if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+					eName = elementName;
+				} else {
+					eName = elementName.concat(value);
+				}
+				click(elementType, homeObject.removeSpecialChar(eName));
 				break;
 			default:
 				String val = convertPath(elementType, elementName);
@@ -1119,6 +1300,8 @@ public class WrapperMethods extends GenericAbstract {
 				break;
 			}
 			returnValue = true;
+		} catch (Exception e) {
+		}
 		return returnValue;
 	}
 
@@ -1127,10 +1310,12 @@ public class WrapperMethods extends GenericAbstract {
 	 * 
 	 * @param name
 	 * @return boolean true if is successfully executed, else false
+	 * @throws Exception 
 	 */
 
 	public Boolean close(String name) throws Exception {
 		boolean returnValue = false;
+		try {
 			String getUrl = driver.getCurrentUrl();
 			switch (name.toLowerCase()) {
 			case "window":
@@ -1166,6 +1351,9 @@ public class WrapperMethods extends GenericAbstract {
 				throw new RuntimeException("could not close :: " + name);
 			}
 			returnValue = true;
+		} catch (Exception e) {
+			throw e;
+		}
 		return returnValue;
 	}
 
@@ -1178,11 +1366,11 @@ public class WrapperMethods extends GenericAbstract {
 	 *            -- Name of the element
 	 * @return boolean true if successfully mouse over the element
 	 */
-	public Boolean mouseOver(String categorytype, String categoryname, String textToReplace) throws Exception{
+	public Boolean mouseOver(String categorytype, String categoryname, String textToReplace) {
 		boolean returnValue = false;
+		try {
 			String name = categoryname.replaceAll("\\s", "").toLowerCase();
-			String category = convertPath(categorytype, categoryname);
-			By categorypath = getPropertyFile(category);
+			By categorypath = getPropertyFile(homeObject.removeSpecialChar(convertPath(categorytype, categoryname)));
 			switch (name) {
 			case "imagetools":
 			case "cancel":
@@ -1196,6 +1384,8 @@ public class WrapperMethods extends GenericAbstract {
 			}
 			homeObject.mouseOverClick(categorypath);
 			returnValue = true;
+		} catch (Exception e) {
+		}
 		return returnValue;
 	}
 
@@ -1213,11 +1403,13 @@ public class WrapperMethods extends GenericAbstract {
 	 * @param identifierDetail
 	 *            -- Name of the element Eg. Edit
 	 * @return boolean true if successfully clicked on the specified element
+	 * @throws Exception 
 	 */
 
 	public Boolean click(String identifierType, String identifierCategory, String identifierSubCategory,
 			String identifierDetail) throws Exception {
 
+		try {
 			By elementPath;
 			switch (identifierType.toLowerCase()) {
 
@@ -1237,7 +1429,10 @@ public class WrapperMethods extends GenericAbstract {
 			}
 
 			return true;
-
+		} catch (Exception e) {
+			throw e;
+		}
+//		return false;
 	}
 
 }

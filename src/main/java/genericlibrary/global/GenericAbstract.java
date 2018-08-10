@@ -472,7 +472,7 @@ public class GenericAbstract {
 			driver.findElement(by);
 			returnValue = true;
 		} catch (Exception e) {
-//			throw e;
+			throw e;
 		}
 		return returnValue;
 	}
@@ -595,6 +595,7 @@ public class GenericAbstract {
 			String getUrl = driver.getCurrentUrl();
 			String[] arrOfUrl = getUrl.split("/", 4);
 			String currentUrl = arrOfUrl[3];
+			
 			if (currentUrl.contains(".php")) {
 				pageUrl = currentUrl.split(".php")[0].replace("/", "_");
 			} else if (currentUrl.contains("?")) {
@@ -602,7 +603,7 @@ public class GenericAbstract {
 				pageUrl = pageUrl.substring(0, pageUrl.length() - 1);
 
 			} else {
-				pageUrl = currentUrl.replace("/", "_");
+				pageUrl = currentUrl.replace("/", "_").replaceAll(":", "").replaceAll(".html","");
 				pageUrl = pageUrl.substring(0, pageUrl.length() - 1);
 			}
 			String file = dirl.getCanonicalPath() + File.separator + "src//main//java" + File.separator + "data" + File.separator
@@ -652,12 +653,13 @@ public class GenericAbstract {
 
 		try {
 			String rmexclamatory = name.replaceAll("!", "");
-			String rmslash = rmexclamatory.replaceAll("/", "");
+			String rmslash = rmexclamatory.replaceAll("/", "").replaceAll(":","").replaceAll(".html","");
 			String elementName = rmslash.replaceAll("\\s", "").toLowerCase();
 			switch (type.toLowerCase()) {
 			case "button":
 				return "btn" + elementName;
 			case "textbox":
+			case "field":
 				return "txt" + elementName;
 
 			case "link":
@@ -670,6 +672,7 @@ public class GenericAbstract {
 				return "ddl" + elementName;
 
 			case "tab":
+			case "section":
 				return "tab" + elementName;
 
 			case "checkbox":
@@ -696,8 +699,9 @@ public class GenericAbstract {
 			}
 
 		} catch (Exception e) {
-			throw e;
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 	public By loginType(String type) {
@@ -848,7 +852,7 @@ public class GenericAbstract {
 		String dest = System.getProperty("user.dir") + File.separator + "screenshots"
 				+ File.separator + TestUtils.generateFailScreenShotName(tcid, stepNo) + ".png";
 	    driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
-	    driver.manage().window().maximize();
+//	    driver.manage().window().maximize();
 	    JavascriptExecutor jexec = (JavascriptExecutor)driver;
 	    jexec.executeScript("window.scrollTo(0,0)"); // will scroll to (0,0) position 
 	    boolean isScrollBarPresent = (boolean)jexec.executeScript("return document.documentElement.scrollHeight>document.documentElement.clientHeight");
